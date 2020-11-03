@@ -142,26 +142,31 @@ namespace BowlingApi.Services
         {
             var result = _repository.GetScoresByGameId(gameId);
 
-            var frames = result.GroupBy(x => (x.FrameNum, x.TotalScore)).Select(f => new Frame
+            if (result?.Count > 0)
             {
-                FrameNum = f.Key.FrameNum,
-                TotalScore = f.Key.TotalScore,
-                Throws = result.Where(t => t.FrameNum == f.Key.FrameNum).Select(t => new Throw
-                { 
-                    ThrowNum = t.ThrowNum,
-                    Score = t.Score
-                }).ToList()
-            }).ToList();
 
-            var response = new BowlingResponse
-            {
-                PlayerName = result.Select(x => x.PlayerName).FirstOrDefault(),
-                GameId = result.Select(x => x.GameId).FirstOrDefault(),
-                Frames = frames.OrderBy(x => x.FrameNum).ToList(),
-                TotalScore = frames.Sum(x => x.TotalScore)
-            };
+                var frames = result.GroupBy(x => (x.FrameNum, x.TotalScore)).Select(f => new Frame
+                {
+                    FrameNum = f.Key.FrameNum,
+                    TotalScore = f.Key.TotalScore,
+                    Throws = result.Where(t => t.FrameNum == f.Key.FrameNum).Select(t => new Throw
+                    {
+                        ThrowNum = t.ThrowNum,
+                        Score = t.Score
+                    }).ToList()
+                }).ToList();
 
-            return response;
+                var response = new BowlingResponse
+                {
+                    PlayerName = result.Select(x => x.PlayerName).FirstOrDefault(),
+                    GameId = result.Select(x => x.GameId).FirstOrDefault(),
+                    Frames = frames.OrderBy(x => x.FrameNum).ToList(),
+                    TotalScore = frames.Sum(x => x.TotalScore)
+                };
+
+                return response;
+            }
+            return null;
         }
 
         public bool IsSpareForFrame10(int gameId)
