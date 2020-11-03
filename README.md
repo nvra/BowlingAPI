@@ -88,6 +88,7 @@ Validations and Assumptions:
 also updates the total for that frame and previous frames if they are either a strike/spare.
 
 8) the response shows the updated score till the played frames.
+
 Sample Response
 {
     "playerName": "player name",
@@ -142,7 +143,9 @@ Sample Response
 }
 
 9) If we want to see the score at any point or later, we can get it from 
+
 http://localhost:64454/api/gameScores/{gameId} HTTPGET
+
 sample response :
 {
     "playerName": "vani",
@@ -257,4 +260,5 @@ sample response :
 }
 
 10) We can delete any game by the gameId. It deleted all the scores related to that game.
+
 http://localhost:64454/api/deleteGameScores/{gameId} - HTTPDELETE
