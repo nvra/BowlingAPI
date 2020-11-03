@@ -16,6 +16,14 @@ namespace BowlingApi.Controllers
             _service = service;
         }
 
+
+        [Route("api/game")]
+        [HttpGet]
+        public string Get()
+        {
+            return "Welcome to 10 Pin Bowling";
+        }
+
         [Route("api/startgame/{playerId}")]
         [HttpPost]
         public ActionResult<Game> StartGame([FromRoute] int playerId)
@@ -41,7 +49,12 @@ namespace BowlingApi.Controllers
         [HttpGet]
         public ActionResult<BowlingResponse> GetGameScores(int gameId)
         {
-            return Ok(_service.GetScoresByGameId(gameId));
+            var response = _service.GetScoresByGameId(gameId);
+            if (response == null)
+            {
+                return NotFound($"GameId {gameId} not found.");
+            }
+            return Ok(response);
         }
 
         [Route("api/deleteGameScores/{gameId}")]
