@@ -15,6 +15,58 @@ namespace BowlingApi.Tests.MockData
             };
         }
 
+        public static List<Game> Game_MockData()
+        {
+            return new List<Game>
+            {
+                new Game
+                {
+                    Id = 1,
+                    PlayerId = 1
+                },
+                new Game
+                {
+                    Id = 2,
+                    PlayerId = 2
+                }
+            };
+        }
+
+        public static List<Framescores> Framescores_MockData()
+        {
+            return new List<Framescores>
+            {
+                new Framescores
+                {
+                    Id = 1,
+                    GameId = 1,
+                    FrameNum = 4,
+                    TotalScore = 10
+                },
+                new Framescores
+                {
+                    Id = 2,
+                    GameId = 1,
+                    FrameNum = 5,
+                    TotalScore = 7
+                },
+                new Framescores
+                {
+                    Id = 5,
+                    GameId = 1,
+                    FrameNum = 10,
+                    TotalScore = 5
+                },
+                new Framescores
+                {
+                    Id = 3,
+                    GameId = 2,
+                    FrameNum = 10,
+                    TotalScore = 10
+                }
+            };
+        }
+
         public static SpResponse SpResponse_MockData()
         {
             return new SpResponse
@@ -112,6 +164,15 @@ namespace BowlingApi.Tests.MockData
                     TotalScore = 10,
                     ThrowNum = 2
                 }
+            };
+        }
+
+        public static Frame Frame_MockData()
+        {
+            return new Frame
+            {
+                Id = 1,
+                TotalScore = 5
             };
         }
     }
