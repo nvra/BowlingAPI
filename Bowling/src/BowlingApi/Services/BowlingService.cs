@@ -115,8 +115,8 @@ namespace BowlingApi.Services
             {
                 _repository.UpdateTotalScore(framescores);
             }
-
-            _repository.UpdateStrikeOrSpareScores(request.GameId, individualScoreId);
+            if(request.ThrowNum < 3)
+                _repository.UpdateStrikeOrSpareScores(request.GameId, individualScoreId);
 
             return GetScoresByGameId(request.GameId);
         }

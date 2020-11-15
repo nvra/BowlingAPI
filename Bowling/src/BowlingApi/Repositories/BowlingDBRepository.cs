@@ -131,7 +131,7 @@ namespace BowlingApi.Repositories
 
         public bool IsSpareForFrame10(int gameId)
         {
-            return _context.Framescores.Where(x => x.GameId == gameId && x.FrameNum == 10).Any(x => x.TotalScore == 10);
+            return _context.Framescores.Where(x => x.GameId == gameId && x.FrameNum == 10).Any(x => x.TotalScore >= 10);
         }
 
         public int? IsScoreValid(int gameId, int frameNum)
