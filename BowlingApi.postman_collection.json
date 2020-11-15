@@ -118,6 +118,36 @@
 			"response": []
 		},
 		{
+			"name": "05-EnterGameScores_EF_New",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"GameId\" : 51,\r\n    \"FrameNum\" : 10,\r\n    \"ThrowNum\" : 3,\r\n    \"Score\" : 10,\r\n    \"Foul\" : \"n\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:64454/api/v1/FrameThrowScore",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "64454",
+					"path": [
+						"api",
+						"v1",
+						"FrameThrowScore"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "06-GetScoresByGameId",
 			"request": {
 				"method": "GET",
