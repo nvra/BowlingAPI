@@ -39,6 +39,10 @@ namespace BowlingApi.Services
         public bool DeleteGameScores(int gameId);
 
         public int? GetGameByPlayer(int playerID);
+
+        public BowlingResponse InsertFrameScoreV1(FramethrowRequest request);
+
+        public bool InsertScores(FramethrowRequest request);
     }
 
     public class BowlingService : IBowlingService
@@ -144,7 +148,6 @@ namespace BowlingApi.Services
 
             if (result?.Count > 0)
             {
-
                 var frames = result.GroupBy(x => (x.FrameNum, x.TotalScore)).Select(f => new Frame
                 {
                     FrameNum = f.Key.FrameNum,
@@ -212,6 +215,87 @@ namespace BowlingApi.Services
         public int? GetGameByPlayer(int playerID)
         {
             return _repository.GetGameByPlayer(playerID)?.Id;
+        }
+
+        public BowlingResponse InsertFrameScoreV1(FramethrowRequest request)
+        {
+            var isSuccess = InsertScores(request);
+
+            if (isSuccess)
+                return GetScoresByGameId(request.GameId);
+
+            return null;
+        }
+
+        public bool InsertScores(FramethrowRequest request)
+        {
+            try
+            {
+                int gameFrameId;
+                int score = 0;
+                request.Score = request.IsFoul ? 0 : request.Score;
+
+                if (request.ThrowNum == 1)
+                {
+                    gameFrameId = _repository.InsertFrameScore(request.GameId, request.FrameNum, request.Score);
+                }
+                else
+                {
+                    var gameFrame = _repository.CheckFrameScore(request.GameId, request.FrameNum);
+                    gameFrameId = gameFrame.Id;
+                    score = gameFrame.TotalScore;
+                }
+
+                var individualScore = new Indivdualscore
+                {
+                    GameFrameId = gameFrameId,
+                    ThrowNum = request.ThrowNum,
+                    Score = request.Score,
+                    IsFoul = request.IsFoul,
+                    IsStrike = request.IsStrike,
+                    IsSpare = (!request.IsFoul && request.ThrowNum == 2 && (score + request.Score == 10))
+                };
+
+                var individualScoreId = _repository.InsertFrameScore(individualScore);
+
+                var framescores = new Framescores
+                {
+                    Id = gameFrameId,
+                    GameId = request.GameId,
+                    FrameNum = request.FrameNum,
+                    TotalScore = score + request.Score
+                };
+
+                if (request.ThrowNum == 2 || request.ThrowNum == 3)
+                {
+                    _repository.UpdateTotalScore(framescores);
+                }
+                if (request.ThrowNum < 3)
+                {
+                    var previousFrame = _repository.GetPreviousFrame(request.GameId, request.FrameNum - 1);
+                    if (previousFrame != null && _repository.IsPreviousFrameStrikeOrSpare(previousFrame?.Id, request.ThrowNum))
+                    {
+                        previousFrame.TotalScore += request.Score;
+                        _repository.UpdateTotalScore(previousFrame);
+                    }
+                    // check if the previous frame is strike
+                    if (request.ThrowNum == 1 && _repository.IsPreviousFrameStrike(previousFrame?.Id))
+                    {
+                        previousFrame = _repository.GetPreviousFrame(request.GameId, (previousFrame.FrameNum ?? 0) - 1);
+                        if (previousFrame != null)
+                        {
+                            previousFrame.TotalScore += request.Score;
+                            _repository.UpdateTotalScore(previousFrame);
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

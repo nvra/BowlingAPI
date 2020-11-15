@@ -71,5 +71,18 @@ namespace BowlingApi.Controllers
             return Ok(_service.GetGameByPlayer(playerId));
         }
 
+        [Route("api/v1/FrameThrowScore")]
+        [HttpPost]
+        public ActionResult<BowlingResponse> FrameThrowScoreV1([FromBody] FramethrowRequest framethrowRequest)
+        {
+            if (!ModelState.IsValid || framethrowRequest == null)
+            {
+                return BadRequest();
+            }
+
+            var response = _service.InsertFrameScoreV1(framethrowRequest);
+
+            return Ok(response);
+        }
     }
 }
