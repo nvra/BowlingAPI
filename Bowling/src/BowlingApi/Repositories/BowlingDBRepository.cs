@@ -50,6 +50,14 @@ namespace BowlingApi.Repositories
         public SpResponse DeleteGameScores(int gameId);
 
         public Game GetGameByPlayer(int playerID);
+
+        public Framescores GetPreviousFrame(int gameId, int frameNum);
+
+        public bool IsPreviousFrameStrike(int? previousframeScoreId);
+
+        public int GetTotalScoreByGameId(int gameId);
+
+        public bool IsPreviousFrameStrikeOrSpare(int? previousframeScoreId, int thrwNum);
     }
 
     public class BowlingDBRepository : IBowlingDBRepository
@@ -131,7 +139,7 @@ namespace BowlingApi.Repositories
 
         public bool IsSpareForFrame10(int gameId)
         {
-            return _context.Framescores.Where(x => x.GameId == gameId && x.FrameNum == 10).Any(x => x.TotalScore == 10);
+            return _context.Framescores.Where(x => x.GameId == gameId && x.FrameNum == 10).Any(x => x.TotalScore >= 10);
         }
 
         public int? IsScoreValid(int gameId, int frameNum)
@@ -144,6 +152,7 @@ namespace BowlingApi.Repositories
             var frame = new Framescores { GameId = gameId, FrameNum = frameNum, TotalScore = score };
             _context.Framescores.Add(frame);
             _context.SaveChanges();
+            _context.Entry(frame).State = EntityState.Detached;
 
             return frame.Id;
         }
@@ -156,7 +165,9 @@ namespace BowlingApi.Repositories
         public int UpdateTotalScore(Framescores request)
         {
             _context.Update(request);
-            return _context.SaveChanges();
+            var returnValue = _context.SaveChanges();
+            _context.Entry(request).State = EntityState.Detached;
+            return returnValue;
         }
 
         public SpResponse UpdateStrikeOrSpareScores(int gameId, int scoreId)
@@ -182,6 +193,27 @@ namespace BowlingApi.Repositories
         public Game GetGameByPlayer(int playerID)
         {
             return _context.Game.FromSqlInterpolated($"GetGameIdByPlayer {playerID}").ToList().FirstOrDefault();
+        }
+
+        public Framescores GetPreviousFrame(int gameId, int frameNum)
+        {
+            var response = _context.Framescores.Where(x => x.GameId == gameId && x.FrameNum == frameNum).Select(x => x).FirstOrDefault();
+            return response;
+        }
+
+        public bool IsPreviousFrameStrike(int? previousframeScoreId)
+        {
+            return _context.Indivdualscore.Where(x => x.GameFrameId == previousframeScoreId && x.ThrowNum == 1 && x.IsStrike == true).Any();
+        }
+
+        public bool IsPreviousFrameStrikeOrSpare(int? previousframeScoreId, int thrwNum)
+        {
+            return _context.Indivdualscore.Where(x => x.GameFrameId == previousframeScoreId && (x.IsStrike == true || (x.IsSpare == true && thrwNum == 1))).Any();
+        }
+
+        public int GetTotalScoreByGameId(int gameId)
+        {
+            return _context.Framescores.Where(x => x.GameId == gameId).Sum(x => x.TotalScore) ?? 0;
         }
     }
 }

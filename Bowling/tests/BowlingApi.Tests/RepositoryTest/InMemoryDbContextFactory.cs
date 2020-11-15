@@ -16,7 +16,9 @@ namespace BowlingApi.Tests.RepositoryTest
             _dbName = $"InMemoryBowlingDatabase_{Guid.NewGuid()}";
 
             var options = new DbContextOptionsBuilder<BowlingDBContext>()
+                .EnableSensitiveDataLogging()
                             .UseInMemoryDatabase(databaseName: _dbName)
+                            //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                             .Options;
             _context = new BowlingDBContext(options);
         }

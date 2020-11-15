@@ -262,3 +262,16 @@ sample response :
 10) We can delete any game by the gameId. It deleted all the scores related to that game.
 
 http://localhost:64454/api/deleteGameScores/{gameId} - HTTPDELETE
+
+15/11/2020
+Added a new route http://localhost:64454/api/v1/FrameThrowScore HTTPPOST similar to the earlier POST route to insert the frame scores.
+Sample request
+{
+    "GameId" : 1,
+    "FrameNum" : 1 ,
+    "ThrowNum" : 1,
+    "Score" : 3,
+    "Foul" : "n"
+}
+All validations are same as per the previous route. Added the route to postman collection as "05-EnterGameScores_EF_New".
+Also added few test cases for Game.

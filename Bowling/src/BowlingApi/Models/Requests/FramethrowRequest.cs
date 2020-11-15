@@ -65,10 +65,6 @@ namespace BowlingApi.Models.Requests
                         {
                             yield return new ValidationResult("Throw Num 1 is a strike. Play next frame.");
                         }
-                        else
-                        {
-                            yield return new ValidationResult("Throw Num 1 is a strike for Frame 10. Play ThrowNum 3.");
-                        }
                     }
                     else
                     {

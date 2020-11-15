@@ -31,6 +31,11 @@ namespace BowlingApi
             services.AddScoped(typeof(IBowlingDBRepository), typeof(BowlingDBRepository));
             services.AddScoped(typeof(IDeleteEntitiesRepository), typeof(DeleteEntitiesRepository));
             services.AddScoped(typeof(IBowlingService), typeof(BowlingService));
+
+            services.AddMvc().AddJsonOptions(opts =>
+            {
+                opts.JsonSerializerOptions.PropertyNamingPolicy = null;//JsonNamingPolicy.CamelCase;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
