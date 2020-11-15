@@ -20,7 +20,7 @@
     "BowlingApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "api/game",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
